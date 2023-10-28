@@ -54,6 +54,7 @@ namespace CalculatorWinformProject
         }
 
 
+        
         private void Num1_Click(object sender, EventArgs e)
         {
             label2.Text += "1";
@@ -103,7 +104,7 @@ namespace CalculatorWinformProject
                 label2.Text = "0";
             }
         }
-        private void Button13_Click(object sender, EventArgs e)
+        private void BackSpace_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(label2.Text) == true)
             {
@@ -185,18 +186,18 @@ namespace CalculatorWinformProject
                 nums = label2.Text.Split('-');
                 label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) - Convert.ToDecimal(nums[1])));  // if we write convert.toDouble, there is some promlems gonna show up. /*
                                                                                                                       // like 2.3 - 0.3 = 1.9999;
-                                                                                                                      //
-                                                                                                                      //
-                                                                                                                      //double a=Convert.ToDouble( Console.ReadLine());
-                                                                                                                      //double b = Convert.ToDouble(Console.ReadLine());
-                                                                                                                      //Console.WriteLine(a + b);
-                                                                                                                      //Console.WriteLine(a - b);
-                                                                                                                      //When we enter the values 2.3 into the first variable and - 0.3 into the second variable, it returns the wrong result, 1.99999.
-
-
-
                 nums[1] = "";
-                Op = 'e';
+                Op = 'e';                                                                                                     //
+                                                                                                                              //
+                                                                                                                              //double a=Convert.ToDouble( Console.ReadLine());
+                                                                                                                              //double b = Convert.ToDouble(Console.ReadLine());
+                                                                                                                              //Console.WriteLine(a + b);
+                                                                                                                              //Console.WriteLine(a - b);
+                                                                                                                              //When we enter the values 2.3 into the first variable and - 0.3 into the second variable, it returns the wrong result, 1.99999.
+
+
+
+
             }
         }
         private void OpDivided_Click(object sender, EventArgs e)

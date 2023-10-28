@@ -212,7 +212,7 @@
             backspace.TabIndex = 16;
             backspace.Text = "<--";
             backspace.UseVisualStyleBackColor = false;
-            backspace.Click += Button13_Click;
+            backspace.Click += BackSpace_Click;
             // 
             // Delete
             // 
