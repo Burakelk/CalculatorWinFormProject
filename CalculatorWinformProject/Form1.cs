@@ -3,6 +3,9 @@ using System.Diagnostics.Metrics;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
+
+// çok fazla sayý girilirse label text e uygulama çöküyor. düzlet
+
 namespace CalculatorWinformProject
 {
     public partial class Form1 : Form
@@ -24,16 +27,16 @@ namespace CalculatorWinformProject
 
             for (int i = 1; i < label2.Text.Length; i++)
             {
-                if ((label2.Text[i] == '+' || label2.Text[i] == '-' || label2.Text[i] == '/' || label2.Text[i] == '*') )
+                if ((label2.Text[i] == '+' || label2.Text[i] == '-' || label2.Text[i] == '/' || label2.Text[i] == '*'))
                 {
                     return;
                 }
             }
-            if (label2.Text[label2.Text.Length-1]!='.')   //   example=  "  12 . + "   error (after dot,there  has to be digit )
+            if (label2.Text[label2.Text.Length - 1] != '.')   //   example=  "  12 . + "   error (after dot,there  has to be digit )
             {
                 label2.Text += Operator;
             }
-           
+
             if (Operator == '+')
             {
                 Op = '+';
@@ -50,11 +53,8 @@ namespace CalculatorWinformProject
             {
                 Op = '*';
             }
-           
+
         }
-
-
-        
         private void Num1_Click(object sender, EventArgs e)
         {
             label2.Text += "1";
@@ -144,19 +144,33 @@ namespace CalculatorWinformProject
         {
             if (Op == '+' && char.IsDigit(label2.Text[label2.Text.Length - 1]) == true)
             {
-
-                nums = label2.Text.Split('+');
-                label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) + Convert.ToDecimal(nums[1])));
-                nums[1] = "";
-                Op = 'e';
+                try
+                {
+                    nums = label2.Text.Split('+');
+                    label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) + Convert.ToDecimal(nums[1])));
+                    nums[1] = "";
+                    Op = 'e';
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Syntax ERR!");
+                }
+             
             }
             else if (Op == '*' && char.IsDigit(label2.Text[label2.Text.Length - 1]) == true)
             {
-
-                nums = label2.Text.Split('*');
-                label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) * Convert.ToDecimal(nums[1])));
-                nums[1] = "";
-                Op = 'e';
+                try
+                {
+                    nums = label2.Text.Split('*');
+                    label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) * Convert.ToDecimal(nums[1])));
+                    nums[1] = "";
+                    Op = 'e';
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Syntax ERR!");
+                }
+             
 
 
             }
@@ -164,30 +178,71 @@ namespace CalculatorWinformProject
             {
 
                 nums = label2.Text.Split('/');
-                if (nums[1] == "0" && nums[0] != "0")
+                //if (nums[1] == "0" && nums[0] != "0")
+                //{
+                //    MessageBox.Show("CAN NOT DEVIDED BY ZERO");    //    digit/0 error                  
+                //    label2.Text = string.Empty;
+                //    return;
+                //}
+                //else if (nums[1] == "0" && nums[0] == "0")       //       0/0 error
+                //{
+                //    MessageBox.Show("Result is undefined");
+                //    label2.Text = string.Empty;
+                //    return;
+                //}
+                try
                 {
-                    MessageBox.Show("CAN NOT DEVIDED BY ZERO");    //    digit/0 error
-                    label2.Text = string.Empty;
-                    return;
+                    label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) / Convert.ToDecimal(nums[1])));
+                    nums[1] = "";
+                    Op = 'e';
                 }
-                else if (nums[1] == "0" && nums[0] == "0")       //       0/0 error
-                {
-                    MessageBox.Show("Result is undefined");
-                    label2.Text = string.Empty;
-                    return;
+                catch (DivideByZeroException)
+                { 
+                    string err= nums[1] == "0" && nums[0] == "0" ? "result is undefined"  : "Cannot divide by zero";
+
+                    MessageBox.Show(err);
                 }
-                label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) / Convert.ToDecimal(nums[1])));
-                nums[1] = "";
-                Op = 'e';
+
             }
             else if (Op == '-')
             {
                 // -5 -5 toplama iþlemi hatasý !!!! düzelt
-                nums = label2.Text.Split('-');
-                label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) - Convert.ToDecimal(nums[1])));  // if we write convert.toDouble, there is some promlems gonna show up. /*
-                                                                                                                      // like 2.3 - 0.3 = 1.9999;
-                nums[1] = "";
-                Op = 'e';                                                                                                     //
+
+              
+
+                try 
+                {
+
+                    if (label2.Text[0] == '-')
+                    {
+                        //int index = label2.Text.LastIndexOf('-');
+                        //nums[0]= label2.Text.Substring(0,index);
+                        //nums[1]= label2.Text.Substring(index,label2.Text.Length-1);
+                        //label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) - Convert.ToDecimal(nums[1])));
+                        //Op = 'e';
+                        //nums[1] = "";
+                        //return;
+                        int index = label2.Text.LastIndexOf('-'); // handle -3 -4
+                        if (index > 0)
+                        {
+                            nums[0] = label2.Text.Substring(0, index);
+                            nums[1] = label2.Text.Substring(index + 1);
+                            label2.Text = nums[1] =Convert.ToString( Convert.ToDecimal(nums[0]) - Convert.ToDecimal(nums[1]));
+                        }
+                        return;
+                    }
+
+                    nums = label2.Text.Split('-');
+                    label2.Text = nums[0] = (Convert.ToString(Convert.ToDecimal(nums[0]) - Convert.ToDecimal(nums[1])));  // if we write convert.toDouble, there is some promlems gonna show up. /*
+                                                                                                                          // like 2.3 - 0.3 = 1.9999;
+                    nums[1] = "";
+                    Op = 'e';
+                } 
+                catch (Exception)
+                {
+                    MessageBox.Show("Syntax ERR!");
+                }
+                                                                                                                 //
                                                                                                                               //
                                                                                                                               //double a=Convert.ToDouble( Console.ReadLine());
                                                                                                                               //double b = Convert.ToDouble(Console.ReadLine());
@@ -213,7 +268,14 @@ namespace CalculatorWinformProject
 
         private void OpMinus_Click(object sender, EventArgs e)
         {
+
             RepeatControl('-');
+            //if (label2.Text==string.Empty)
+            //{
+            //    label2.Text += "-" ;
+            //}
+            //else { RepeatControl('-'); }
+
             //Op = '-';
             //label2.Text += '-';
             //Op = '-';
@@ -237,7 +299,7 @@ namespace CalculatorWinformProject
                 return;
             }
 
-            for (int i = 0; i < label2.Text.Length ; i++)
+            for (int i = 0; i < label2.Text.Length; i++)
             {
                 if (label2.Text[i] == '+' || label2.Text[i] == '-' || label2.Text[i] == '/' || label2.Text[i] == '*')
                 {
@@ -249,14 +311,14 @@ namespace CalculatorWinformProject
                     numberOfDots++;
                 }
             }
-            if (((char.IsDigit(label2.Text[label2.Text.Length-1])==true && (ifOperator == false && (numberOfDots == 0)  || (ifOperator == true && (numberOfDots == 0 || numberOfDots == 1))))))
+            if (((char.IsDigit(label2.Text[label2.Text.Length - 1]) == true && (ifOperator == false && (numberOfDots == 0) || (ifOperator == true && (numberOfDots == 0 || numberOfDots == 1))))))
             {
                 label2.Text += '.';
             }
 
 
-            
-            
+
+
 
         }
     }
